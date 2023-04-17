@@ -22,7 +22,7 @@ function App() {
 
     setIsConnecting(true);
 
-    const socket = io("http://localhost:1996", {
+    const socket = io(import.meta.env.VITE_APP_SERVER_URL, {
       auth: {
         userEmail: emailInputRef.current!.value,
       },
