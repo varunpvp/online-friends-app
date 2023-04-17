@@ -1,17 +1,19 @@
 import http from "http";
+import { createRedisClient } from "./redis";
 import { Server } from "socket.io";
-import Redis from "ioredis";
 import { findUserByEmail, findUserFriends, updateUserIsOnline } from "./users";
+
+const port = Number(process.env.PORT || "8080");
 
 const httpServer = http.createServer();
 
 const ioServer = new Server(httpServer, { cors: { origin: "*" } });
 
-const pub = new Redis();
+const pub = createRedisClient();
 
 ioServer.on("connection", async (socket) => {
   try {
-    const sub = new Redis();
+    const sub = createRedisClient();
 
     const user = findUserByEmail(socket.handshake.auth.userEmail);
 
@@ -53,5 +55,5 @@ ioServer.on("connection", async (socket) => {
   }
 });
 
-ioServer.listen(1996);
-console.log("server running on", 1996);
+ioServer.listen(port);
+console.log("server running on", port);
